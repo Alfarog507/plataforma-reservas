@@ -1,0 +1,18 @@
+# Ignora node_modules y dist de NestJS
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Variables de entorno
+.env
+.env.*
+
+# Logs
+*.log
+
+# Cobertura de tests
+coverage/
+
+# Configs de IDE
+.vscode/
+.idea/

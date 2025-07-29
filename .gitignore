@@ -1,0 +1,124 @@
+# Node modules (global)
+**/node_modules/
+
+# Build outputs (ambos proyectos)
+**/dist/
+**/build/
+**/.next/
+**/out/
+dist/
+build/
+.next/
+out/
+
+# Environment variables (global)
+**/.env
+**/.env.*
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+.env
+.env.*
+.env.local
+
+# Logs (global)
+**/logs/
+**/*.log
+**/npm-debug.log*
+**/pnpm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/lerna-debug.log*
+logs/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# OS files
+**/.DS_Store
+.DS_Store
+**/Thumbs.db
+
+# IDEs and editors
+**/.vscode/
+**/.idea/
+.vscode/
+.idea/
+*.sublime-workspace
+*.launch
+.settings/
+.c9/
+.project
+.classpath
+
+# VSCode exceptions (mantener configuraciones útiles)
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Test coverage
+**/coverage/
+**/.nyc_output/
+coverage/
+.nyc_output/
+
+# Temp files
+**/temp/
+**/tmp/
+**/.temp/
+**/.tmp/
+temp/
+tmp/
+
+# Runtime data
+**/pids/
+**/*.pid
+**/*.seed
+**/*.pid.lock
+
+# TypeScript
+**/*.tsbuildinfo
+**/next-env.d.ts
+*.tsbuildinfo
+
+# Package managers
+**/.pnpm-store/
+**/.yarn/cache
+**/.yarn/unplugged
+**/.pnp.*
+.pnpm-store/
+.yarn/cache
+
+# Database files
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+
+# Cache directories
+**/.cache/
+**/.parcel-cache/
+.cache/
+.parcel-cache/
+
+# TurboRepo
+**/.turbo
+.turbo
+
+# Vercel
+**/.vercel
+.vercel
+
+# Specific backend ignores
+backend/uploads/
+backend/logs/
+
+# Specific frontend ignores
+frontend/.next/
+frontend/out/
+
+# Don't ignore these files
+!**/Dockerfile
+!**/.dockerignore
+!**/docker-compose.yml
