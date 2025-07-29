@@ -1,38 +1,36 @@
-# Multi-stage build para reducir vulnerabilidades
+# Base stage
 FROM node:18-alpine AS base
+
+WORKDIR /app
 
 # Instalar dependencias de seguridad
 RUN apk add --no-cache libc6-compat
 
-# Establecer directorio de trabajo
-WORKDIR /app
-
 # Copiar archivos de dependencias
 COPY package*.json ./
 
-# Construir la aplicación
-FROM base AS builder
-
-# Instalar todas las dependencias (incluidas dev para build)
-RUN npm ci && npm cache clean --force
-
-# Copiar código fuente
+# Development stage
+FROM base AS development
+RUN npm ci
 COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
 
-# Construir la aplicación de Next.js
+# Build stage
+FROM base AS builder
+RUN npm ci
+COPY . .
 RUN npm run build
 
-# Imagen de producción
+# Production stage
 FROM base AS production
 
 # Crear usuario no-root
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
 
-WORKDIR /app
-
-# Copiar archivos de dependencias
-COPY package*.json ./
+# Instalar dependencias de seguridad
+RUN apk add --no-cache libc6-compat
 
 # Instalar solo dependencias de producción
 RUN npm ci --only=production && npm cache clean --force
@@ -40,14 +38,10 @@ RUN npm ci --only=production && npm cache clean --force
 # Copiar build desde stage anterior
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.ts ./next.config.ts
 
 # Crear directorio .next/cache con permisos correctos
 RUN mkdir -p .next/cache && chown -R nextjs:nodejs /app
 USER nextjs
 
-# Exponer puerto
 EXPOSE 3000
-
-# Comando para ejecutar Next.js en modo producción
 CMD ["npm", "start"]

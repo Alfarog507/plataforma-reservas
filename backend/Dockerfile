@@ -1,45 +1,45 @@
-# Multi-stage build para reducir vulnerabilidades
-FROM node:18-alpine AS builder
+# Base stage
+FROM node:18-alpine AS base
 
 WORKDIR /app
 
 # Copiar archivos de dependencias
 COPY package*.json ./
 COPY tsconfig*.json ./
+COPY nest-cli.json ./
 
-# Instalar todas las dependencias (incluidas dev para build)
-RUN npm ci && npm cache clean --force
+# Development stage
+FROM base AS development
+RUN npm ci
+COPY . .
+EXPOSE 3000
+# CAMBIO: Usar nodemon en lugar de nest start --watch
+CMD ["npm", "run", "start:debug"]
 
-# Copiar código fuente
-COPY src ./src
-
-# Construir la aplicación
+# Build stage
+FROM base AS builder
+RUN npm ci
+COPY . .
+# Construir la aplicación NestJS
 RUN npm run build
 
-# Imagen de producción
-FROM node:18-alpine AS production
+# Production stage
+FROM base AS production
 
 # Crear usuario no-root
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001
-
-WORKDIR /app
-
-# Copiar archivos de dependencias
-COPY package*.json ./
+    adduser -S backend -u 1001
 
 # Instalar solo dependencias de producción
 RUN npm ci --only=production && npm cache clean --force
 
-# Copiar build desde stage anterior
+# Copiar build compilado desde builder
 COPY --from=builder /app/dist ./dist
 
 # Cambiar ownership
-RUN chown -R nestjs:nodejs /app
-USER nestjs
+RUN chown -R backend:nodejs /app
+USER backend
 
-# Exponer puerto
 EXPOSE 3000
-
-# Comando para ejecutar
-CMD ["node", "dist/main.js"]
+# En producción, ejecutar el JavaScript compilado
+CMD ["node", "dist/main"]
