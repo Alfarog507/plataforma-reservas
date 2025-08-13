@@ -10,10 +10,11 @@ services:
       - "4000:3000"
     volumes:
       - ./backend:/app
-      - /app/node_modules # Preserva node_modules
+      - /app/node_modules
     environment:
       - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true # ← AGREGAR: Para Windows
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
 
   frontend:
     build:
@@ -28,3 +29,7 @@ services:
       - /app/.next
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    stdin_open: true
+    tty: true
